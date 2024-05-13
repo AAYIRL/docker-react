@@ -1,0 +1,25 @@
+name: Sanity Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login into Docker
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'
+      - name: Build Docker Image
+        run: docker build -f Dockerfile.dev -t test-image .
+      - name: Running Tests
+        run: docker run test-image npm run test -- --watchAll=false
+      - name: Notify on Test Success (if successful)
+        if: success()
+        run: echo "Tests passed!"
+      - name: Analyze Test Failures (if failed)
+        if: failure()
+        run: echo "Tests failed!"
