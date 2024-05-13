@@ -14,6 +14,6 @@ jobs:
       - name: Login into Docker
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p '${{ secrets.DOCKER_PASSWORD }}'
       - name: Build Docker Image
-        run: docker build -f Dockerfile.dev -t test-image
+        run: docker build -f Dockerfile.dev -t test-image .
       - name: Running Tests
         run: docker run test-image npm run test
